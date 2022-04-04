@@ -1,0 +1,152 @@
+.register {
+  max-width: 396px;
+  font-family: Inter;
+  justify-content: center;
+  margin: 70px auto;
+}
+
+.register__title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+  margin: 0px;
+  margin-top: 34px;
+}
+
+.register__image {
+  width: 38px;
+  height: 38px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: Inter;
+  margin-top:40px;
+}
+
+.form__input {
+  border: 0;
+  width: 96%;
+  color: #cccccc;
+  background-color: #2F2F2F;
+  border-radius: 8px;
+  text-overflow: ellipsis;
+  outline: none;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 1.2;
+  min-height: 46px;
+  padding: 0 0 0 15px;
+}
+
+.form__input:focus {
+  border:1px solid #3DDC84;
+}
+
+.form__title {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #8B8B8B;
+  margin: 0px;
+  margin-bottom: 10px;
+}
+
+.form__text-error {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #EE3465;
+  margin-top: 8px;
+  min-height: 12px;
+}
+
+.button {
+  padding: 0;
+  width: 100%;
+  height: 50px;
+  cursor: pointer;
+  border-radius: 2px;
+  border: 0;
+  background: #4285F4;
+
+}
+
+.button__link {
+  text-decoration: none;
+  text-align: center;
+  color: white;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.button_register_margin {
+  margin-top: 68px;
+}
+
+.form__submit-button:hover {
+  opacity: 0.8;
+}
+
+.form__link {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #8B8B8B;
+}
+
+.form__link-text {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #4285F4;
+  text-decoration: none;
+}
+
+.form__link-text:hover {
+  opacity: 0.8;
+}
+
+@media screen and (max-width: 768px){
+  .register {
+    padding-top: 164px;
+  }
+  .form__submit-button {
+    font-size: 14px;
+    line-height: 17px;
+  }
+  .button_register_margin {
+    margin-top: 65px;
+  }
+}
+
+@media screen and (max-width: 441px){
+  .form__input {
+    width: 94%;
+  }
+  .register {
+    width: calc(100% - 30px*2);
+    justify-content: center;
+    margin: 55px auto;
+    padding-top: 0;
+  }
+  .register__title {
+    margin-top: 50px;
+    text-align: center;
+  }
+  .button_register_margin {
+    margin-top: 160px;
+  }
+}
+
