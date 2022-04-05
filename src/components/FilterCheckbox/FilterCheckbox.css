@@ -46,7 +46,7 @@
   }
 }
 
-@media screen and (max-width: 768px){
+@media screen and (max-width: 320px){
   .filter-checkbox {
     padding-top: 30px;
     width: calc(100% - 14px*2);

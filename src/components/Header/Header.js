@@ -5,8 +5,9 @@ import image from '../../images/accaunt.svg'
 import menu from '../../images/menu-burger.svg'
 import MenuBurger from "../MenuBurger/MenuBurger";
 import {
-  Link, NavLink, Route,
+  Link, Route,
 } from 'react-router-dom';
+import Navigation from "../Navigation/Navigation";
 
 function Header() {
   const [isActive, setIsActive] = useState(false);
@@ -42,17 +43,14 @@ function Header() {
         <Link to='/'>
           <img className='header__image' src={logo} alt='Логотип'/>
         </Link>
-        <div className='links'>
-          <NavLink to='/movies' className='links__movies' activeClassName='links__movies_active'>Фильмы</NavLink>
-          <NavLink to='/saved-movies' className='links__movies' activeClassName='links__movies_active'>Сохранённые фильмы</NavLink>
-        </div>
+        <Navigation/>
         <div className='burger' onClick={switchMenuBurgerS}>
           <img className='burger__image' src={menu}/>
         </div>
         <div className='account'>
           <Link className='account__link' to='/profile'>Аккаунт</Link>
           <div className='account__container'>
-            <img src={image} className='account__container__image'/>
+            <img src={image} className='account__container__image' alt='Аккаунт'/>
           </div>
         </div>
         <MenuBurger isActive={isActive} offMenuBurger={offMenuBurger}/>

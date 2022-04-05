@@ -34,33 +34,6 @@
   color: black;
 }
 
-.links {
-  display: flex;
-  padding-left: 85px;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
-}
-
-.links__movies {
-  text-decoration: none;
-  line-height: 18px;
-  color: #FFFFFF;
-  margin-right: 20px;
-}
-
-.links__movies:hover {
-  opacity: 0.8;
-}
-
-.links__movies_active {
-  border-bottom: 1px solid #3DDC84;
-}
-
-.links__movies:last-of-type {
-  padding-right: 0px;
-}
-
 .account {
   display: flex;
 }

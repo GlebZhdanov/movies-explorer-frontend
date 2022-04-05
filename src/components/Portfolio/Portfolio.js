@@ -10,15 +10,15 @@ function Portfolio () {
       <p className='portfolio__title'>Портфолио</p>
         <div className='content-portfolio'>
           <a className='content-portfolio__link' href='https://github.com/GlebZhdanov/how-to-learn' target="_blank">Статичный сайт</a>
-          <img className='content-portfolio__logo' src={logo}/>
+          <img className='content-portfolio__logo' src={logo} alt='Стрелка'/>
         </div>
         <div className='content-portfolio'>
           <a className='content-portfolio__link' href='https://github.com/GlebZhdanov/russian-travel' target="_blank">Адаптивный сайт</a>
-          <img className='content-portfolio__logo' src={logo}/>
+          <img className='content-portfolio__logo' alt='Стрелка' src={logo}/>
         </div>
         <div className='content-portfolio'>
           <a className='content-portfolio__link' href='https://github.com/GlebZhdanov/mesto' target="_blank">Одностраничное приложение</a>
-          <img className='content-portfolio__logo' src={logo}/>
+          <img className='content-portfolio__logo' src={logo} alt='Стрелка'/>
         </div>
     </section>
     </>

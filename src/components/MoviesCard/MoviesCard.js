@@ -19,7 +19,7 @@ function MoviesCard (props) {
     <>
       <Route path='/movies'>
         <div className='movies-card'>
-          <img src={props.data.link} className='movies-card__image'/>
+          <img src={props.data.link} className='movies-card__image' alt='Постер фильма'/>
           <div className='movies-card__container'>
             <h2 className='movies-card__title'>{props.data.name}</h2>
             <button className={cardLikeButtonClassName} onClick={handleLike}></button>
@@ -29,7 +29,7 @@ function MoviesCard (props) {
       </Route>
       <Route path='/saved-movies'>
         <div className='movies-card movies-card_delete'>
-          <img src={props.data.link} className='movies-card__image'/>
+          <img src={props.data.link} className='movies-card__image' alt='Постер фильма'/>
           <div className='movies-card__container'>
             <h2 className='movies-card__title'>{props.data.name}</h2>
             <button className='movies-card__button movies-card__button_delete'></button>

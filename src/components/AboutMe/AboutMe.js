@@ -17,7 +17,7 @@ function AboutMe() {
           <a href='https://github.com/GlebZhdanov' target="_blank" className='list-links__link'>Github</a>
         </nav>
         </div>
-        <img className='avatar' src={avatar}></img>
+        <img className='avatar' src={avatar} alt='Аватар'></img>
       </div>
     </section>
   )
