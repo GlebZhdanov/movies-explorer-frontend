@@ -1,0 +1,41 @@
+.navigation {
+  display: flex;
+  padding-left: 85px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.navigation__link {
+  text-decoration: none;
+  line-height: 18px;
+  color: #FFFFFF;
+  margin-right: 20px;
+}
+
+.navigation__link:hover {
+  opacity: 0.8;
+}
+
+.navigation__link_active {
+  border-bottom: 1px solid #3DDC84;
+}
+
+.links__movies:last-of-type {
+  padding-right: 0px;
+}
+
+@media screen and (max-width: 550px) {
+  .navigation {
+    padding-left: 10px;
+  }
+  .navigation__link {
+    margin-right: 10px;
+  }
+}
+
+@media screen and (max-width: 370px){
+  .navigation {
+    display: none;
+  }
+}
