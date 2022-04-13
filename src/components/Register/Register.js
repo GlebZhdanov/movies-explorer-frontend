@@ -1,10 +1,13 @@
 import React from "react";
 import './Register.css'
 import {Link} from "react-router-dom";
-import Header from "../Header/Header";
 import logo from "../../images/logo.svg";
+import {Formik, Form, Field, ErrorMessage} from "formik";
+import {ValidateRegister} from "../../utils/Validate";
 
 function Register() {
+  const { initialValues, onSubmit, validationSchema } = ValidateRegister
+
   return (
     <section className="register">
       <Link to='/'>
@@ -13,29 +16,47 @@ function Register() {
       <h2 className="register__title">
         Добро пожаловать!
       </h2>
-      <form className="form">
-        <label className="form__title">Имя</label>
-        <input className="form__input"
-          required
-          type="name"
-          defaultValue='Виталий'/>
-        <span id='name-error' className='form__text-error'></span>
-        <label className="form__title">E-mail</label>
-        <input className="form__input"
-          required
-          type="email"
-          defaultValue='pochta@yandex.ru'/>
-        <span id='email-error' className='form__text-error'></span>
-        <label className="form__title">Пароль</label>
-        <input className="form__input"
-          required
-          defaultValue='Виталий'
-          type="password"/>
-        <span id='password-error' className='form__text-error'>Что-то пошло не так...</span>
-          <button className="button button_register_margin" type="submit">
-            <Link className='button__link' to='/signin'>Зарегистрироваться</Link>
-          </button>
-      </form>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}>
+        {formik => {
+          return (
+            <Form className="form">
+              <label className="form__title">Имя</label>
+              <Field className="form__input"
+                required
+                type="name"
+                name='name'
+              />
+              <span id='name-error' className='form__text-error'>
+                <ErrorMessage name='name'/>
+              </span>
+              <label className="form__title">E-mail</label>
+              <Field className="form__input"
+                required
+                type="email"
+                name='email'
+                />
+              <span id='email-error' className='form__text-error'>
+                <ErrorMessage name='email'/>
+              </span>
+              <label className="form__title">Пароль</label>
+              <Field className="form__input"
+                required
+                name='password'
+                type='password'
+              />
+              <span id='password-error' className='form__text-error'>
+                <ErrorMessage name='password'/>
+              </span>
+              <button
+                className={(formik.dirty && formik.isValid) ? 'button button_register_margin' : 'button button_register_margin button_disabled'} type='submit' disabled={!(formik.dirty && formik.isValid)}>
+                Зарегистрироваться
+              </button>
+            </Form>
+          )}}
+      </Formik>
       <p className="form__link">Уже зарегистрированы?
         <Link to="/signin" className="form__link-text"> Войти</Link>
       </p>

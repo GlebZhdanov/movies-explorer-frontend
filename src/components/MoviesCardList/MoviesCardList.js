@@ -1,26 +1,34 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import './MoviesCardList.css'
-import {films} from "../../utils/Films";
-import {saveFilms} from "../../utils/SaveFilms";
 import MoviesCard from "../MoviesCard/MoviesCard";
 import {Route} from "react-router-dom";
+import Preloader from "../Preloader/Preloader";
 
 
-function MoviesCardList() {
+function MoviesCardList({films, preloader, isLoading}) {
+  const [listFilms, setListFilms] = useState(12)
+
+  function handleFilms () {
+    setListFilms(listFilms + 3)
+  }
+
+
   return (
     <>
       <Route path='/movies'>
         <section className='movies-list'>
-          {films.map((film, i) => (
-            <MoviesCard key={i} data={film}></MoviesCard>
+          <Preloader preloader={preloader} />
+          {films.slice(0, listFilms).map((film, i) => (
+            <MoviesCard key={i} films={film}></MoviesCard>
           ))}
+          {!films.length && !isLoading && (<p className='movies-list__text'>Ничего не найдено</p>)}
         </section>
-        <button className='movies-button'>Ещё</button>
+        <button onClick={handleFilms} className='movies-button'>Ещё</button>
       </Route>
       <Route path='/saved-movies'>
         <section className='movies-list'>
-          {saveFilms.map((film, i) => (
-            <MoviesCard key={i} data={film}></MoviesCard>
+          {films.map((film, id) => (
+            <MoviesCard key={id} films={film}></MoviesCard>
           ))}
         </section>
       </Route>

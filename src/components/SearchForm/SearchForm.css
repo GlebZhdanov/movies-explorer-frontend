@@ -35,11 +35,16 @@
   font-size: 14px;
   line-height: 18px;
   color: #FFFFFF;
+  cursor: pointer;
+}
+
+.search__input-button_disabled {
+  cursor: revert;
+  opacity: 0.8;
 }
 
 .search__input-button:hover {
   opacity: 0.8;
-  cursor: pointer;
 }
 
 .search__input::placeholder {
@@ -49,6 +54,16 @@
   line-height: 20px;
   color: #8B8B8B;
   padding-left: 24px;
+}
+
+.form__text-error-search {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #EE3465;
+  margin-top: 4px;
+  min-height: 12px;
 }
 
 @media screen and (max-width: 768px){

@@ -6,13 +6,13 @@ import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import Footer from "../Footer/Footer";
 
-function Movies () {
+function Movies ({films, preloader, isLoading, updateQuery, handleSubmitSearch}) {
   return (
     <>
       <Header/>
-      <SearchForm/>
+      <SearchForm handleSubmitSearch={handleSubmitSearch} updateQuery={updateQuery}/>
       <FilterCheckbox/>
-      <MoviesCardList/>
+      <MoviesCardList  isLoading={isLoading} preloader={preloader}  films={films}/>
       <Footer/>
     </>
   )

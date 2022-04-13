@@ -1,10 +1,10 @@
 .filter-checkbox {
   display: flex;
   align-items: center;
-  padding-top: 28px;
+  padding-top: 7px;
   width: calc(100% - 70px*2);
   margin: 0 auto;
-  padding-bottom: 40px;
+  padding-bottom: 28px;
 }
 
 .filter-checkbox__switch {
@@ -42,13 +42,13 @@
 @media screen and (max-width: 768px){
   .filter-checkbox {
     width: calc(100% - 30px*2);
-    padding-bottom: 50px;
+    padding-bottom: 52px;
   }
 }
 
 @media screen and (max-width: 320px){
   .filter-checkbox {
-    padding-top: 30px;
+    padding-top: 15px;
     width: calc(100% - 14px*2);
     padding-bottom: 63px;
   }

@@ -8,6 +8,7 @@
   grid-row-gap: 37px;
   padding-top: 80px;
   min-height: 530px ;
+  position: relative;
 }
 
 .movies-button {
@@ -26,6 +27,15 @@
   text-align: center;
   color: #FFFFFF;
   border-radius: 6px;
+}
+
+.movies-list__text {
+  text-align: center;
+  position: absolute;
+  margin-left: 0;
+  margin-right: 0;
+  left: 0;
+  right: 0;
 }
 
 .movies-button:hover {
