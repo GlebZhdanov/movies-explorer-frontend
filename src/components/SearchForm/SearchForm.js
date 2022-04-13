@@ -3,12 +3,12 @@ import './SearchForm.css'
 import {Formik, Form, Field, ErrorMessage} from "formik";
 import {ValidateSearch} from "../../utils/Validate";
 
-function SearchForm ({updateQuery, handleSubmitSearch}) {
+function SearchForm ({setQuery, handleSubmitSearch}) {
 
   const { initialValues, validationSchema } = ValidateSearch
 
   const onSubmitSearch = (value) => {
-    updateQuery(value.search)
+    setQuery(value.search)
     handleSubmitSearch()
   }
 

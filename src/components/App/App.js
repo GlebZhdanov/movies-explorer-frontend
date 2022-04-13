@@ -79,7 +79,7 @@ function App() {
         <Route path='/movies'>
           <Movies
             handleSubmitSearch={handleSubmitSearch}
-            updateQuery={setQuery}
+            setQuery={setQuery}
             isLoading={isLoading}
             preloader={preloader}
             films={filterMovies}
