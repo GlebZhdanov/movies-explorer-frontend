@@ -7,6 +7,12 @@ function SearchForm ({setQuery, handleSubmitSearch}) {
 
   const { initialValues, validationSchema } = ValidateSearch
 
+
+  // const onSubmit = (e) => {
+  //   e.preventDefault()
+  //   handleSubmitSearch()
+  // }
+
   const onSubmitSearch = (value) => {
     setQuery(value.search)
     handleSubmitSearch()
@@ -14,6 +20,10 @@ function SearchForm ({setQuery, handleSubmitSearch}) {
 
   return (
     <section className='search'>
+      {/*<form onSubmit={onSubmit}>*/}
+      {/*  <input onChange={(event) => setQuery(event.target.value)}/>*/}
+      {/*  <button type='submit'></button>*/}
+      {/*</form>*/}
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -25,7 +35,8 @@ function SearchForm ({setQuery, handleSubmitSearch}) {
                 <Field name='search'
                   className='search__input'
                   type='search'
-                  placeholder='Фильм'/>
+                  placeholder='Фильм'
+                />
                 <button type='submit' className={(formik.dirty && formik.isValid) ? 'search__input-button' : 'search__input-button search__input-button_disabled'} type='submit' disabled={!(formik.dirty && formik.isValid)}>Поиск
                 </button>
               </div>

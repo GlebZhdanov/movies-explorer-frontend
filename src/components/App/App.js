@@ -41,7 +41,7 @@ function App() {
     } else {
       setMovies(movies)
     }
-
+  console.log(filteredMovies)
     const filteredMovies = JSON.parse(localStorage.getItem('films_filter') || '[]');
     if(movies.length) {
       setFilterMovies(filteredMovies)
