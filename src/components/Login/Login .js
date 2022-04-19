@@ -1,13 +1,17 @@
 import React from 'react';
 import {Formik, Form, Field, ErrorMessage} from "formik";
 import './Login.css'
-import { Link } from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import logo from "../../images/logo.svg";
 import {ValidateLogin} from "../../utils/Validate";
 
-function Login() {
-  const { initialValues, onSubmit, validationSchema } = ValidateLogin
 
+function Login({handleLogin}) {
+  let navigate = useHistory()
+  const { initialValues, validationSchema } = ValidateLogin
+  function onSubmit(values) {
+    handleLogin(values.email, values.password);
+  }
   return (
     <section className='login'>
       <Link to='/'>

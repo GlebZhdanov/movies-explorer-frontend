@@ -84,6 +84,8 @@
 }
 
 .profile__button-exit {
+  background-color: #202020;;
+  border: none;
   display: block;
   text-decoration: none;
   font-style: normal;
@@ -92,6 +94,7 @@
   line-height: 16px;
   color: #EE3465;
   text-align: center;
+  margin: 0 auto;
 }
 
 .profile__button-exit:hover {

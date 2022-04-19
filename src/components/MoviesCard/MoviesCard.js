@@ -3,10 +3,11 @@ import './MoviesCard.css'
 import {Route} from "react-router-dom";
 import Preloader from "../Preloader/Preloader";
 
-function MoviesCard ({films}) {
+function MoviesCard ({films, handleSavedMovie}) {
   const [isLike, setIsLike] = useState(false)
 
   function handleLike() {
+    handleSavedMovie(films)
     setIsLike((like) => !like)
   }
 
@@ -38,12 +39,12 @@ function MoviesCard ({films}) {
       </Route>
       {/*<Route path='/saved-movies'>*/}
       {/*  <div className='movies-card movies-card_delete'>*/}
-      {/*    <img src={`https://api.nomoreparties.co/${props.data.image.url}`} className='movies-card__image' alt='Постер фильма'/>*/}
+      {/*    /!*<img src={`https://api.nomoreparties.co/${props.data.image.url}`} className='movies-card__image' alt='Постер фильма'/>*!/*/}
       {/*    <div className='movies-card__container'>*/}
-      {/*      <h2 className='movies-card__title'>{props.data.nameRU}</h2>*/}
+      {/*      /!*<h2 className='movies-card__title'>{props.data.nameRU}</h2>*!/*/}
       {/*      <button className='movies-card__button movies-card__button_delete'></button>*/}
       {/*    </div>*/}
-      {/*    <p className='movies-card__time'>{props.data.duration} минут</p>*/}
+      {/*    /!*<p className='movies-card__time'>{props.data.duration} минут</p>*!/*/}
       {/*  </div>*/}
       {/*</Route>*/}
     </>

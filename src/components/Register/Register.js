@@ -5,8 +5,12 @@ import logo from "../../images/logo.svg";
 import {Formik, Form, Field, ErrorMessage} from "formik";
 import {ValidateRegister} from "../../utils/Validate";
 
-function Register() {
-  const { initialValues, onSubmit, validationSchema } = ValidateRegister
+function Register({handleRegister}) {
+  const { initialValues, validationSchema } = ValidateRegister
+
+  function onSubmit(value) {
+    handleRegister(value.name, value.email, value.password)
+  }
 
   return (
     <section className="register">
