@@ -200,7 +200,7 @@ function App() {
     localStorage.setItem('short', JSON.stringify(short));
   }
 
-  const getMovies = () => {
+  useEffect(() => {
     const movies = JSON.parse(localStorage.getItem('films') || '[]');
     setMovies(movies);
     if (!movies.length) {
@@ -214,9 +214,6 @@ function App() {
       })
       .finally(() => setPreloader(false))
     }
-  }
-
-  useEffect(() => {
 
     const filteredMovies = JSON.parse(localStorage.getItem('films_filter') || '[]');
     setFilterMovies(filteredMovies)
@@ -237,7 +234,6 @@ function App() {
         (movie) => movie.nameRU.toLowerCase().indexOf(query) >= 0
       );
       updateFilterMovies(filteredMovies);
-      getMovies()
     }
   };
 

@@ -112,7 +112,8 @@ export class Api {
 }
 
 const api = new Api({
-  url: "https://api.films.gleb.nomoredomains.work",
+  url: 'http://localhost:3001',
+  // url: "https://api.films.gleb.nomoredomains.work",
   headers: {
     "Content-Type": "application/json"
   }
