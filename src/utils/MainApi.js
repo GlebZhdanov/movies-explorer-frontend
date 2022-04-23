@@ -111,11 +111,11 @@ export class Api {
   }
 }
 
-const auth = new Api({
-  url: "http://localhost:3001",
+const api = new Api({
+  url: "https://api.films.gleb.nomoredomains.work",
   headers: {
     "Content-Type": "application/json"
   }
 })
 
-export {auth}
+export {api}

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import './MoviesCardList.css'
 import MoviesCard from "../MoviesCard/MoviesCard";
 import {Route, Switch} from "react-router-dom";
-import Preloader from "../Preloader/Preloader";
 
 function MoviesCardList({handleMovieSaveDelete ,filmFilter ,checkLikeStatus ,films, isShort, isLoading, handleSavedMovie, handleMovieDelete}) {
   const [count, setCount] = useState(0);

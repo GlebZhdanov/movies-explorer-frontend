@@ -23,12 +23,11 @@ export class Api {
 
 }
 
-const api = new Api({
-  baseUrl:"https://api.nomoreparties.co/",
+const apiMovies = new Api({
   url: 'https://api.nomoreparties.co/beatfilm-movies',
   headers: {
     'Content-Type' : 'application/json'
   }
 })
 
-export { api }
+export { apiMovies }

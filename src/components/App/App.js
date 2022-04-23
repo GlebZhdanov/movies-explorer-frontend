@@ -1,7 +1,7 @@
 import './App.css';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Main from '../Main/Main';
-import { Switch, Route, useHistory, Redirect} from 'react-router-dom'
+import { Switch, Route, useHistory } from 'react-router-dom'
 import PageNotFound from '../PageNotFound/PageNotFound';
 import {CurrentUserContext} from '../../context/CurrentUserContext';
 import Register from '../Register/Register';
@@ -9,10 +9,11 @@ import Login from '../Login/Login ';
 import Profile from '../Profile/Profile';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
-import { api } from '../../utils/MoviesApi';
-import {auth} from "../../utils/MainApi";
+import { apiMovies } from '../../utils/MoviesApi';
+import {api} from "../../utils/MainApi";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
-import {AppContext} from "../../context/AppContext";
+import Preloader from "../Preloader/Preloader";
+import InfoTooltip from "../InfoTooltip/InfoTooltip";
 
 function App() {
   const [preloader, setPreloader] = useState(false);
@@ -23,44 +24,55 @@ function App() {
   const [short, setShort] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [loginVerification, setLoginVerification] = React.useState(false);
+  const [loginVerification, setLoginVerification] = useState(false);
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false)
+  const [isInfoTooltipPopupTitle, setIsInfoTooltipPopupTitle] = useState('')
+
+  const closePopup = () => {
+    setIsInfoTooltipPopupOpen(false)
+  }
+
+  const openPopup = (textError)  => {
+    setIsInfoTooltipPopupOpen(true);
+    setIsInfoTooltipPopupTitle(textError)
+  }
 
   let history = useHistory();
+
   //Блок логики пользователя
 
   React.useEffect(() => {
-    if(loginVerification === true) {
+    if(loginVerification) {
       history.push('/movies')
-      Promise.all([auth.getUserInfo(), auth.getAllMovies()])
+      setPreloader(true)
+      Promise.all([api.getUserInfo(), api.getAllMovies()])
       .then(([dataInfoUser, dataInfoMovies]) => {
         setCurrentUser(dataInfoUser);
-        setSaveMovies(dataInfoMovies);
+        updateMoviesSave(dataInfoMovies);
       })
       .catch((err) => console.log("ошибка получения данных: " + err))
+      .finally(() => setPreloader(false))
     }
-
   }, [loginVerification]);
 
-  function handleRegister(name, email, password) {
-    auth.registration({
+  const handleRegister = (name, email, password) => {
+    setPreloader(true)
+    api.registration({
       name: name,
       email: email,
       password: password
     })
     .then(() => {
       history.push('/signin')
-      // setVerification(true);
     })
     .catch((err) => {
-      // setVerification(false);
-      console.log("ошибка регистрации пользователя: " + err)})
-    .finally(() => {
-      // switchInfoTooltipPopup();
-    })
+      openPopup("Произошла ошибка регистрации")})
+    .finally(() => setPreloader(false))
   }
 
-  function handleLogin(email, password) {
-    auth.authorization({
+  const handleLogin = (email, password) => {
+    setPreloader(true)
+    api.authorization({
       email: email,
       password: password
     })
@@ -69,35 +81,36 @@ function App() {
         localStorage.setItem('jwt', data.message);
         setLoginVerification(true);
         history.push('/movies')
-        // setLoginVerification(true);
       } else {
         setLoginVerification(false);
       }
     })
     .catch((err) => {
-      // setVerification(false);
-      // switchInfoTooltipPopup();
-      console.log("ошибка авторизации пользователя: " + err)})
+      openPopup('Произошла ошибка входа')})
+    .finally(() => setPreloader(false))
   }
 
-  function handlePatchUserInfo(data) {
-    auth.patchUserInfo(data)
+  const handlePatchUserInfo = (data) => {
+    setPreloader(true)
+    api.patchUserInfo(data)
     .then((data) => {
       setCurrentUser(data)
     })
-    .catch((err) => console.log("ошибка данных пользователя: " + err))
+    .catch((err) => {
+      openPopup('Произошла ошибка редактирования данных пользователя')})
+    .finally(() => setPreloader(false))
   }
 
-  function logoutLogin() {
+  const logoutLogin = () => {
     setLoginVerification(false);
     history.push('/signin');
     localStorage.removeItem('jwt');
   }
 
-  function handleChekToken() {
+  const handleChekToken = () => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      auth.chekToken()
+      api.chekToken()
       .then((res) => {
         if (res) {
           setLoginVerification(true)
@@ -107,6 +120,8 @@ function App() {
         localStorage.removeItem('jwt');
         setLoginVerification(false)
         console.log("ошибка проверки токена: " + err)})
+    } else {
+      setLoginVerification(false)
     }
   }
 
@@ -114,62 +129,45 @@ function App() {
       handleChekToken()
   },[])
 
-  // console.log({saveMovies: saveMovies})
-  // console.log({filter: filterMovies})
+  //Блок логики работы с фильмами
 
-  // const filmFilter = (films) => {
-  //   setFilmsSave(films)
-  // }
-
-
-  function checkLikeStatus(movie) {
-    if (saveMovies) {
+  const checkLikeStatus = (movie) => {
       return saveMovies.some(
-        (i) =>
-          i.movieId === movie.id
-          &&
-          i.owner === currentUser._id
+        (i) => i.owner === currentUser._id && i.movieId === movie.id
       );
-    }
     return false;
   }
 
-  function handleMovieSaveDelete(movie) {
-    const movieForDelete = saveMovies.find((i) => i.movieId === movie.id);
-    console.log(movieForDelete)
-    auth
-    .deleteMovie(movieForDelete._id)
+  const handleMovieSaveDelete = (movie) => {
+    const movieDelete = saveMovies.find((i) => i.movieId === movie.id);
+    api
+    .deleteMovie(movieDelete._id)
     .then((res) => {
-      const NewSavedMovies = saveMovies.filter(
+      const savedMovies = saveMovies.filter(
         (i) => i.movieId !== movie.id
       );
-      updateMoviesSave(NewSavedMovies)
+      updateMoviesSave(savedMovies)
     })
     .catch((err) => {
-      console.log(err);
+      openPopup('Что-то пошло не так')
+      console.log(err)
     });
   }
 
-  // console.log(isLike)
-
-  // console.log(saveMovies)
-  //Блок логики с фильмами
-
-  function handleSavedMovie(movies) {
-    auth
+  const handleSavedMovie = (movies) => {
+    api
     .postMovie(movies)
     .then((dataCard) => {
-      // const NewSavedMovies = [dataCard, ...saveMovies];
       updateMoviesSave([dataCard, ...saveMovies]);
     })
     .catch((err) => {
-      console.log(err);
+      openPopup('Что-то пошло не так')
     });
   }
 
-  function handleMovieDelete(id) {
+  const handleMovieDelete = (id) => {
     console.log(id)
-    auth.deleteMovie(id)
+    api.deleteMovie(id)
     .then(() => {
       setSaveMovies((films) => films.filter((film) => id !== film._id))
     })
@@ -188,9 +186,8 @@ function App() {
   }
 
   const updateMoviesSave = (movies) => {
-    localStorage.setItem('savedMovies', JSON.stringify(movies))
+    localStorage.setItem('saved_movies', JSON.stringify(movies))
     setSaveMovies(movies);
-    // setIsLoading(false)
   }
 
   const updateQuery = (query) => {
@@ -203,30 +200,23 @@ function App() {
     localStorage.setItem('short', JSON.stringify(short));
   }
 
-  useEffect(() => {
+  const getMovies = () => {
     const movies = JSON.parse(localStorage.getItem('films') || '[]');
     setMovies(movies);
-    if(!movies.length) {
-      api.getAllFilms()
+    if (!movies.length) {
+      setPreloader(true)
+      apiMovies.getAllFilms()
       .then((res) => {
         updateMovies(res)
       })
       .catch((err) => {
-        console.log(err)
+        openPopup('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз')
       })
+      .finally(() => setPreloader(false))
     }
+  }
 
-    const moviesSave = JSON.parse(localStorage.getItem('savedMovies') || '[]');
-    setSaveMovies(moviesSave);
-    if(!moviesSave.length) {
-      auth.getAllMovies()
-      .then((res) => {
-        updateMoviesSave(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    }
+  useEffect(() => {
 
     const filteredMovies = JSON.parse(localStorage.getItem('films_filter') || '[]');
     setFilterMovies(filteredMovies)
@@ -247,6 +237,7 @@ function App() {
         (movie) => movie.nameRU.toLowerCase().indexOf(query) >= 0
       );
       updateFilterMovies(filteredMovies);
+      getMovies()
     }
   };
 
@@ -261,14 +252,13 @@ function App() {
 
   return (
       <CurrentUserContext.Provider value={currentUser}>
-        <AppContext.Provider value={saveMovies}>
+        <Preloader preloader={preloader} />
           <Switch>
             <Route exact path='/'>
               <Main/>
             </Route>
             <Route path='/signup'>
-              <Register
-                handleRegister={handleRegister}/>
+              <Register handleRegister={handleRegister}/>
             </Route>
             <Route path='/signin'>
               <Login handleLogin={handleLogin}/>
@@ -280,45 +270,46 @@ function App() {
                 handlePatchUserInfo={handlePatchUserInfo}/>
               </ProtectedRoute>
             </Route>
-            <Route path='/profile'>
-            {/*<ProtectedRoute*/}
-            {/*  path='/profile'*/}
-            {/*  component={Profile}*/}
-            {/*  loginVerification={loginVerification}*/}
-            {/*  logoutLogin={logoutLogin}*/}
-            {/*  handlePatchUserInfo={handlePatchUserInfo}/>*/}
-            {/*<ProtectedRoute*/}
-            {/*  path='/movies'*/}
-            {/*  handleSavedMovie={handleSavedMovie}*/}
-            {/*  component={Movies}*/}
-            {/*  loginVerification={loginVerification}*/}
-            {/*  isShort={short}*/}
-            {/*  short={updateShort}*/}
-            {/*  query={query}*/}
-            {/*  handleSubmitSearch={handleSubmitSearch}*/}
-            {/*  setQuery={updateQuery}*/}
-            {/*  preloader={preloader}*/}
-            {/*  films={filterMovies}*/}
-            {/*  isLoading={isLoading}*/}
-            {/*  handleMovieSaveDelete={handleMovieSaveDelete}*/}
-            {/*  handleMovieDelete={handleMovieDelete}*/}
-            {/*  checkLikeStatus={checkLikeStatus}*/}
-            {/*  />*/}
+            <Route path='/movies'>
+              <ProtectedRoute loginVerification={loginVerification}>
+                <Movies
+                  handleSavedMovie={handleSavedMovie}
+                  isShort={short}
+                  short={updateShort}
+                  query={query}
+                  handleSubmitSearch={handleSubmitSearch}
+                  setQuery={updateQuery}
+                  films={filterMovies}
+                  isLoading={isLoading}
+                  handleMovieSaveDelete={handleMovieSaveDelete}
+                  handleMovieDelete={handleMovieDelete}
+                  checkLikeStatus={checkLikeStatus}
+                  />
+              </ProtectedRoute>
+            </Route>
             <Route path='/saved-movies'>
-              <SavedMovies
-                short={updateShort}
-                isShort={short}
-                setQuery={updateQuery}
-                handleMovieDelete={handleMovieDelete}
-                saveMovies={saveMovies}
-                checkLikeStatus={checkLikeStatus}
-                handleSubmitSearch={handleSubmitSearchSave}/>
+              <ProtectedRoute loginVerification={loginVerification}>
+                <SavedMovies
+                  short={updateShort}
+                  isShort={short}
+                  setQuery={updateQuery}
+                  handleMovieDelete={handleMovieDelete}
+                  saveMovies={saveMovies}
+                  checkLikeStatus={checkLikeStatus}
+                  handleSubmitSearch={handleSubmitSearchSave}
+                />
+              </ProtectedRoute>
             </Route>
             <Route path='*'>
               <PageNotFound/>
             </Route>
           </Switch>
-        </AppContext.Provider>
+        <InfoTooltip
+          textError={isInfoTooltipPopupTitle}
+          isOpenPopup={isInfoTooltipPopupOpen}
+          isClosePopup={closePopup}
+        />
+
       </CurrentUserContext.Provider>
   )
 }
