@@ -20,7 +20,7 @@ function Profile ({handlePatchUserInfo, logoutLogin}) {
     <>
       <Header/>
       <section className='profile'>
-        <h3 className='profile__title'>Привет, Виталий!</h3>
+        <h3 className='profile__title'>Привет, {currentUser.name}!</h3>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
