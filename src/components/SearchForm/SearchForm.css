@@ -50,10 +50,9 @@
 .search__input::placeholder {
   font-style: normal;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 20px;
-  color: #8B8B8B;
-  padding-left: 24px;
+  color: white;
 }
 
 .form__text-error-search {

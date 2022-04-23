@@ -44,6 +44,14 @@ export class Api {
     .then(this._chekRes)
   }
 
+  chekToken() {
+    return fetch(this._url + "/users/me", {
+      method: "GET",
+      headers: this._getHeaders(),
+    })
+    .then(this._chekRes)
+  }
+
   getUserInfo() {
     return fetch(`${this._url}/users/me`, {
       method: "GET",
@@ -68,7 +76,7 @@ export class Api {
       method: 'POST',
       headers: this._getHeaders(),
       body: JSON.stringify({
-        country: data.country,
+        country: data.country || 'null',
         director: data.director,
         duration: data.duration,
         year: data.year,
@@ -92,12 +100,14 @@ export class Api {
     .then(this._chekRes)
   }
 
-  chekToken() {
-    return fetch(this._url + "/users/me", {
-      method: "GET",
-      headers: this._getHeaders(),
+  deleteMovie(id) {
+    return fetch(`${this._url}/movies/${id}`, {
+      method: 'DELETE',
+      headers: this._getHeaders()
     })
-    .then(this._chekRes)
+    .then((res) => {
+      return this._chekRes(res)
+    })
   }
 }
 

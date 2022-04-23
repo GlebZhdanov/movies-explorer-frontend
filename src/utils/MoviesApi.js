@@ -20,6 +20,7 @@ export class Api {
       return this._chekRes(res)
     })
   }
+
 }
 
 const api = new Api({

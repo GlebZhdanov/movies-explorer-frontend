@@ -1,4 +1,5 @@
 .burger-menu {
+  z-index: 8;
   width: 520px;
   height: 100vh;
   background-color: #202020;

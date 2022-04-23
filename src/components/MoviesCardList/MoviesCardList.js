@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import './MoviesCardList.css'
 import MoviesCard from "../MoviesCard/MoviesCard";
-import {Route} from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 import Preloader from "../Preloader/Preloader";
 
-function MoviesCardList({films, preloader, isShort, isLoading, handleSavedMovie}) {
+function MoviesCardList({handleMovieSaveDelete ,filmFilter ,checkLikeStatus ,films, isShort, isLoading, handleSavedMovie, handleMovieDelete}) {
   const [count, setCount] = useState(0);
   const [addCount, setAddCount] = useState(0);
 
@@ -28,16 +28,19 @@ function MoviesCardList({films, preloader, isShort, isLoading, handleSavedMovie}
   const size = useWindowSize();
 
   useEffect(() => {
-    if (size.width >= 1280) {
-      setCount(12)
-      setAddCount(3);
-    } else if(size.width >= 786) {
-      setCount(8)
-      setAddCount(2);
-    } else {
-      setCount(5)
-      setAddCount(2);
+    function getSizeWindow() {
+      if (size.width >= 1280) {
+        setCount(12)
+        setAddCount(3);
+      } else if(size.width >= 786) {
+        setCount(8)
+        setAddCount(2);
+      } else {
+        setCount(5)
+        setAddCount(2);
+      }
     }
+    getSizeWindow()
   },[size])
 
   const showMovies= () => {
@@ -46,14 +49,13 @@ function MoviesCardList({films, preloader, isShort, isLoading, handleSavedMovie}
 
   return (
     <>
-      <Route path='/movies'>
+      <Route path='/(movies)/'>
         <section className='movies-list'>
-          <Preloader preloader={preloader} />
           {films
           .filter(movie => !isShort || movie.duration <= 40)
           .slice(0, count)
           .map((film, i) => (
-            <MoviesCard handleSavedMovie={handleSavedMovie} key={i} films={film}></MoviesCard>
+            <MoviesCard handleMovieSaveDelete={handleMovieSaveDelete} checkLikeStatus={checkLikeStatus} filmFilter={filmFilter} handleSavedMovie={handleSavedMovie} key={i} films={film}></MoviesCard>
           ))}
           {!films.length && !isLoading && (<p className='movies-list__text'>Ничего не найдено</p>)}
         </section>
@@ -61,11 +63,14 @@ function MoviesCardList({films, preloader, isShort, isLoading, handleSavedMovie}
           <button onClick={showMovies} className='movies-button'>Ещё</button>
         )}
       </Route>
-      <Route path='/saved-movies'>
+      <Route path='/(saved-movies)/'>
         <section className='movies-list'>
-          {films.map((film, id) => (
-            <MoviesCard key={id} films={film}></MoviesCard>
+          {films
+          .filter(movie => !isShort || movie.duration <= 40)
+          .map((film, i) => (
+            <MoviesCard checkLikeStatus={checkLikeStatus} handleMovieDelete={handleMovieDelete} key={i} films={film}></MoviesCard>
           ))}
+          {!films.length && !isLoading && (<p className='movies-list__text'>Сохраненных фильмов нет</p>)}
         </section>
       </Route>
     </>

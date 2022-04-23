@@ -1,21 +1,22 @@
-// import React from 'react';
-// import './SavedMovies.css'
-// import Header from "../Header/Header";
-// import SearchForm from "../SearchForm/SearchForm";
-// import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
-// import MoviesCardList from "../MoviesCardList/MoviesCardList";
-// import Footer from "../Footer/Footer";
-//
-// function SavedMovies ({short, isShort, films, isLoading, setQuery, handleSubmitSearch, query, preloader, handleSavedMovie}) {
-//   return (
-//     <>
-//       <Header/>
-//       <SearchForm query={query} handleSubmitSearch={handleSubmitSearch} setQuery={setQuery}/>
-//       <FilterCheckbox short={short} isShort={isShort}/>
-//       <MoviesCardList handleSavedMovie={handleSavedMovie} isShort={isShort} isLoading={isLoading} preloader={preloader} films={films}/>
-//       <Footer/>
-//     </>
-//   )
-// }
-//
-// export default SavedMovies;
+import React from 'react';
+import './SavedMovies.css'
+import Header from "../Header/Header";
+import SearchForm from "../SearchForm/SearchForm";
+import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
+import Footer from "../Footer/Footer";
+import MoviesCardList from "../MoviesCardList/MoviesCardList";
+
+function SavedMovies ({checkLikeStatus,handleSubmitSearch ,isShort ,saveMovies, handleMovieDelete, short, query, setQuery}) {
+
+  return (
+    <>
+      <Header/>
+      <SearchForm query={query} handleSubmitSearch={handleSubmitSearch} setQuery={setQuery}/>
+      <FilterCheckbox short={short} isShort={isShort}/>
+      <MoviesCardList checkLikeStatus={checkLikeStatus} isShort={isShort} handleMovieDelete={handleMovieDelete} films={saveMovies}/>
+      <Footer/>
+    </>
+  )
+}
+
+export default SavedMovies;

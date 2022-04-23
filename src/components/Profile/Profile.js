@@ -26,6 +26,10 @@ function Profile ({handlePatchUserInfo, logoutLogin}) {
           validationSchema={validationSchema}
           onSubmit={onSubmit}>
           {formik => {
+            let ValueSum = formik.values.name === currentUser.name && formik.values.email === currentUser.email;
+            let onCurrent = formik.dirty;
+            let validateInput = formik.isValid && Object.keys(formik.touched).length > 1;
+            let booleanDisable = !ValueSum && onCurrent && validateInput;
             return (
               <Form className='profile__form'>
                 <div className='profile__container'>
@@ -47,8 +51,8 @@ function Profile ({handlePatchUserInfo, logoutLogin}) {
                 <div id='name-error' className='form__text-error form__text-error_profile'>
                     <ErrorMessage name='email'/>
                   </div>
-                <button className={(formik.isValid) ? 'profile__button' : 'profile__button profile__button_disabled'} type='submit'
-                        disabled={!(formik.isValid)}>
+                <button className={booleanDisable ? 'profile__button' : 'profile__button profile__button_disabled'} type='submit'
+                        disabled={!(booleanDisable)}>
                   Редактировать</button>
               </Form>
             )

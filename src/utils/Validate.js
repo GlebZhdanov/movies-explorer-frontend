@@ -50,25 +50,3 @@ export const ValidateLProfile = {
   })
 };
 
-
-// function getListFilms(search) {
-//   //   setPreloader(true)
-//   //   api.getAllFilms()
-//   //   .then((moviesData) => {
-//   //     localStorage.setItem('films', JSON.stringify(moviesData));
-//   //     setIsLoading(false)
-//   //     SearchFilm(search)
-//   //   })
-//   //   .catch((err) => {
-//   //     console.log(err)
-//   //   })
-//   // .finally(() =>
-//   //   setPreloader(false)
-//   // )
-// }
-
-//  function SearchFilm (search) {
-//   let filmsListSaved = JSON.parse(localStorage.getItem('films'));
-//   let filmsList = filmsListSaved.filter(film => film.nameRU.toLowerCase().includes(search.toLowerCase()));
-//   setFilms(filmsList)
-// }

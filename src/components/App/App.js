@@ -12,6 +12,7 @@ import SavedMovies from '../SavedMovies/SavedMovies';
 import { api } from '../../utils/MoviesApi';
 import {auth} from "../../utils/MainApi";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import {AppContext} from "../../context/AppContext";
 
 function App() {
   const [preloader, setPreloader] = useState(false);
@@ -25,8 +26,7 @@ function App() {
   const [loginVerification, setLoginVerification] = React.useState(false);
 
   let history = useHistory();
-
-  //Блок логики с API
+  //Блок логики пользователя
 
   React.useEffect(() => {
     if(loginVerification === true) {
@@ -40,18 +40,6 @@ function App() {
     }
 
   }, [loginVerification]);
-
-  // React.useEffect(() => {
-  //   if(loginVerification === true) {
-  //     history.push('/movies')
-  //     auth.getUserInfo()
-  //     .then((dataInfoUser) => {
-  //       setCurrentUser(dataInfoUser);
-  //       setLoginVerification(true)
-  //     })
-  //     .catch((err) => console.log("ошибка получения данных: " + err))
-  //   }
-  // }, [loginVerification]);
 
   function handleRegister(name, email, password) {
     auth.registration({
@@ -126,20 +114,68 @@ function App() {
       handleChekToken()
   },[])
 
-  function handleSavedMovie(movies) {
+  // console.log({saveMovies: saveMovies})
+  // console.log({filter: filterMovies})
+
+  // const filmFilter = (films) => {
+  //   setFilmsSave(films)
+  // }
+
+
+  function checkLikeStatus(movie) {
+    if (saveMovies) {
+      return saveMovies.some(
+        (i) =>
+          i.movieId === movie.id
+          &&
+          i.owner === currentUser._id
+      );
+    }
+    return false;
+  }
+
+  function handleMovieSaveDelete(movie) {
+    const movieForDelete = saveMovies.find((i) => i.movieId === movie.id);
+    console.log(movieForDelete)
     auth
-    .postMovie(movies)
-    .then((dataCard) => {
-      // const NewSavedMovies = [res.movie, ...savedMovies];
-      updateMoviesSave(dataCard);
-      localStorage.setItem('savedMovies', JSON.stringify(saveMovies));
+    .deleteMovie(movieForDelete._id)
+    .then((res) => {
+      const NewSavedMovies = saveMovies.filter(
+        (i) => i.movieId !== movie.id
+      );
+      updateMoviesSave(NewSavedMovies)
     })
     .catch((err) => {
       console.log(err);
     });
   }
 
+  // console.log(isLike)
+
+  // console.log(saveMovies)
   //Блок логики с фильмами
+
+  function handleSavedMovie(movies) {
+    auth
+    .postMovie(movies)
+    .then((dataCard) => {
+      // const NewSavedMovies = [dataCard, ...saveMovies];
+      updateMoviesSave([dataCard, ...saveMovies]);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
+  function handleMovieDelete(id) {
+    console.log(id)
+    auth.deleteMovie(id)
+    .then(() => {
+      setSaveMovies((films) => films.filter((film) => id !== film._id))
+    })
+    .catch((err) => console.log("ошибка удаленения карточки: " + err))
+  }
+
   const updateMovies = (movies) => {
     setMovies(movies)
     localStorage.setItem('films', JSON.stringify(movies));
@@ -179,6 +215,19 @@ function App() {
         console.log(err)
       })
     }
+
+    const moviesSave = JSON.parse(localStorage.getItem('savedMovies') || '[]');
+    setSaveMovies(moviesSave);
+    if(!moviesSave.length) {
+      auth.getAllMovies()
+      .then((res) => {
+        updateMoviesSave(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+
     const filteredMovies = JSON.parse(localStorage.getItem('films_filter') || '[]');
     setFilterMovies(filteredMovies)
 
@@ -189,6 +238,7 @@ function App() {
 
   useEffect(() => {
     handleSubmitSearch()
+    handleSubmitSearchSave()
   },[query])
 
   const handleSubmitSearch = () => {
@@ -200,8 +250,18 @@ function App() {
     }
   };
 
+  const handleSubmitSearchSave = () => {
+    if(query.length) {
+      const filteredMoviesSave = saveMovies.filter(
+        (movie) => movie.nameRU.toLowerCase().indexOf(query) >= 0
+      );
+      setSaveMovies(filteredMoviesSave)
+    }
+  };
+
   return (
       <CurrentUserContext.Provider value={currentUser}>
+        <AppContext.Provider value={saveMovies}>
           <Switch>
             <Route exact path='/'>
               <Main/>
@@ -211,47 +271,54 @@ function App() {
                 handleRegister={handleRegister}/>
             </Route>
             <Route path='/signin'>
-              <Login
-                handleLogin={handleLogin}/>
+              <Login handleLogin={handleLogin}/>
             </Route>
-            <ProtectedRoute
-              path='/profile'
-              component={Profile}
-              loginVerification={loginVerification}
-              logoutLogin={logoutLogin}
-              handlePatchUserInfo={handlePatchUserInfo}/>
-            <ProtectedRoute
-              path='/movies'
-              handleSavedMovie={handleSavedMovie}
-              component={Movies}
-              loginVerification={loginVerification}
-              isShort={short}
-              short={updateShort}
-              query={query}
-              handleSubmitSearch={handleSubmitSearch}
-              setQuery={updateQuery}
-              preloader={preloader}
-              films={filterMovies}
-              isLoading={isLoading}/>
-            {/*<Route path='/movies'>*/}
-            {/*    <Movies*/}
-            {/*      isShort={short}*/}
-            {/*      short={updateShort}*/}
-            {/*      query={query}*/}
-            {/*      handleSubmitSearch={handleSubmitSearch}*/}
-            {/*      setQuery={updateQuery}*/}
-            {/*      preloader={preloader}*/}
-            {/*      films={filterMovies}*/}
-            {/*      isLoading={isLoading}*/}
-            {/*    />*/}
-            {/*  </Route>*/}
-            {/*  <Route path='/saved-movies'>*/}
-            {/*    <SavedMovies />*/}
-            {/*  </Route>*/}
+            <Route path='/profile'>
+              <ProtectedRoute loginVerification={loginVerification}>
+              <Profile
+                logoutLogin={logoutLogin}
+                handlePatchUserInfo={handlePatchUserInfo}/>
+              </ProtectedRoute>
+            </Route>
+            <Route path='/profile'>
+            {/*<ProtectedRoute*/}
+            {/*  path='/profile'*/}
+            {/*  component={Profile}*/}
+            {/*  loginVerification={loginVerification}*/}
+            {/*  logoutLogin={logoutLogin}*/}
+            {/*  handlePatchUserInfo={handlePatchUserInfo}/>*/}
+            {/*<ProtectedRoute*/}
+            {/*  path='/movies'*/}
+            {/*  handleSavedMovie={handleSavedMovie}*/}
+            {/*  component={Movies}*/}
+            {/*  loginVerification={loginVerification}*/}
+            {/*  isShort={short}*/}
+            {/*  short={updateShort}*/}
+            {/*  query={query}*/}
+            {/*  handleSubmitSearch={handleSubmitSearch}*/}
+            {/*  setQuery={updateQuery}*/}
+            {/*  preloader={preloader}*/}
+            {/*  films={filterMovies}*/}
+            {/*  isLoading={isLoading}*/}
+            {/*  handleMovieSaveDelete={handleMovieSaveDelete}*/}
+            {/*  handleMovieDelete={handleMovieDelete}*/}
+            {/*  checkLikeStatus={checkLikeStatus}*/}
+            {/*  />*/}
+            <Route path='/saved-movies'>
+              <SavedMovies
+                short={updateShort}
+                isShort={short}
+                setQuery={updateQuery}
+                handleMovieDelete={handleMovieDelete}
+                saveMovies={saveMovies}
+                checkLikeStatus={checkLikeStatus}
+                handleSubmitSearch={handleSubmitSearchSave}/>
+            </Route>
             <Route path='*'>
               <PageNotFound/>
             </Route>
           </Switch>
+        </AppContext.Provider>
       </CurrentUserContext.Provider>
   )
 }

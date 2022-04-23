@@ -5,10 +5,9 @@ import {ValidateSearch} from "../../utils/Validate";
 
 function SearchForm ({ setQuery, handleSubmitSearch, query}) {
   const { initialValues, validationSchema } = ValidateSearch
-
   const onSubmitSearch = (values) => {
-    setQuery(values.search)
-    handleSubmitSearch()
+    setQuery(values.search);
+    handleSubmitSearch();
   }
 
   return (
@@ -19,13 +18,13 @@ function SearchForm ({ setQuery, handleSubmitSearch, query}) {
         onSubmit={onSubmitSearch}
         >
         {formik => {
-
           return (
             <Form >
               <div className='search__form'>
                 <Field name='search'
                   className='search__input'
                   type='search'
+                  placeholder={query}
                 />
                 <button type='submit'
                         className={(formik.dirty && formik.isValid) ? 'search__input-button' : 'search__input-button search__input-button_disabled'} type='submit'
