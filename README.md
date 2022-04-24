@@ -18,7 +18,6 @@
 - HTML, CSS
 - Javascript
 - React
-- API
 
 ## Установка зависимостей
 
