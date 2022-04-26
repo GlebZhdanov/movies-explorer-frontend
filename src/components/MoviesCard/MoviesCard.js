@@ -3,7 +3,6 @@ import './MoviesCard.css'
 import {Route} from "react-router-dom";
 
 function MoviesCard ({handleMovieSaveDelete ,films, handleSavedMovie, handleMovieDelete, checkLikeStatus }) {
-
   function handleDislike() {
     handleMovieSaveDelete(films)
   }

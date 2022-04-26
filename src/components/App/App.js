@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
 import Main from '../Main/Main';
-import { Switch, Route, useHistory } from 'react-router-dom'
+import { Switch, Route, useHistory, useLocation } from 'react-router-dom'
 import PageNotFound from '../PageNotFound/PageNotFound';
 import {CurrentUserContext} from '../../context/CurrentUserContext';
 import Register from '../Register/Register';
@@ -14,6 +14,7 @@ import {api} from "../../utils/MainApi";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import Preloader from "../Preloader/Preloader";
 import InfoTooltip from "../InfoTooltip/InfoTooltip";
+import ProtectedRouteVerification from "../ProtectedRouteVerification/ProtectedRouteVerification";
 
 function App() {
   const [preloader, setPreloader] = useState(false);
@@ -24,26 +25,35 @@ function App() {
   const [short, setShort] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [querySaveFilms, setQuerySaveFilms] = useState('')
   const [loginVerification, setLoginVerification] = useState(false);
-  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false)
-  const [isInfoTooltipPopupTitle, setIsInfoTooltipPopupTitle] = useState('')
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
+  const [isInfoTooltipPopupTitle, setIsInfoTooltipPopupTitle] = useState('');
+  const [isInfoTooltipPopupSuccess, setIsInfoTooltipPopupSuccess] = useState(false);
 
   const closePopup = () => {
     setIsInfoTooltipPopupOpen(false)
   }
 
-  const openPopup = (textError)  => {
+  const openPopupError = (textTitle)  => {
     setIsInfoTooltipPopupOpen(true);
-    setIsInfoTooltipPopupTitle(textError)
+    setIsInfoTooltipPopupTitle(textTitle);
+  }
+
+  const openPopupSuccess = (textTitle)  => {
+    setIsInfoTooltipPopupOpen(true);
+    setIsInfoTooltipPopupSuccess(true)
+    setIsInfoTooltipPopupTitle(textTitle);
   }
 
   let history = useHistory();
 
+  let location = useLocation();
+
   //Блок логики пользователя
 
   React.useEffect(() => {
-    if(loginVerification) {
-      history.push('/movies')
+    if(localStorage.getItem('jwt') !== null) {
       setPreloader(true)
       Promise.all([api.getUserInfo(), api.getAllMovies()])
       .then(([dataInfoUser, dataInfoMovies]) => {
@@ -63,10 +73,12 @@ function App() {
       password: password
     })
     .then(() => {
-      history.push('/signin')
+      openPopupSuccess('Вы успешно зарегистрировались');
+      handleLogin(email, password);
+      history.push('/movies');
     })
     .catch((err) => {
-      openPopup("Произошла ошибка регистрации")})
+      openPopupError("Произошла ошибка регистрации")})
     .finally(() => setPreloader(false))
   }
 
@@ -86,7 +98,7 @@ function App() {
       }
     })
     .catch((err) => {
-      openPopup('Произошла ошибка входа')})
+      openPopupError('Что-то пошло не так')})
     .finally(() => setPreloader(false))
   }
 
@@ -94,17 +106,22 @@ function App() {
     setPreloader(true)
     api.patchUserInfo(data)
     .then((data) => {
-      setCurrentUser(data)
+      setCurrentUser(data);
+      setIsInfoTooltipPopupSuccess(true);
+      openPopupSuccess('Данные были изменены')
     })
     .catch((err) => {
-      openPopup('Произошла ошибка редактирования данных пользователя')})
+      openPopupError('Произошла ошибка редактирования данных пользователя')})
     .finally(() => setPreloader(false))
   }
 
   const logoutLogin = () => {
     setLoginVerification(false);
-    history.push('/signin');
-    localStorage.removeItem('jwt');
+    history.push('/');
+    localStorage.clear()
+    setMovies([]);
+    setLoginVerification(false);
+    window.location.reload();
   }
 
   const handleChekToken = () => {
@@ -149,7 +166,7 @@ function App() {
       updateMoviesSave(savedMovies)
     })
     .catch((err) => {
-      openPopup('Что-то пошло не так')
+      openPopupError('Что-то пошло не так')
       console.log(err)
     });
   }
@@ -161,15 +178,15 @@ function App() {
       updateMoviesSave([dataCard, ...saveMovies]);
     })
     .catch((err) => {
-      openPopup('Что-то пошло не так')
+      openPopupError('Что-то пошло не так')
     });
   }
 
   const handleMovieDelete = (id) => {
-    console.log(id)
     api.deleteMovie(id)
     .then(() => {
-      setSaveMovies((films) => films.filter((film) => id !== film._id))
+      const savedMovies = saveMovies.filter((film) => id !== film._id);
+      updateMoviesSave(savedMovies)
     })
     .catch((err) => console.log("ошибка удаленения карточки: " + err))
   }
@@ -210,7 +227,7 @@ function App() {
         updateMovies(res)
       })
       .catch((err) => {
-        openPopup('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз')
+        openPopupError('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз')
       })
       .finally(() => setPreloader(false))
     }
@@ -238,26 +255,33 @@ function App() {
   };
 
   const handleSubmitSearchSave = () => {
-    if(query.length) {
-      const filteredMoviesSave = saveMovies.filter(
-        (movie) => movie.nameRU.toLowerCase().indexOf(query) >= 0
+    if(querySaveFilms.length) {
+      saveMovies.filter(
+        (movie) => movie.nameRU.toLowerCase().indexOf(querySaveFilms) >= 0
       );
-      setSaveMovies(filteredMoviesSave)
     }
   };
+
+  useEffect(() => {
+    setQuerySaveFilms('')
+  },[location])
 
   return (
       <CurrentUserContext.Provider value={currentUser}>
         <Preloader preloader={preloader} />
           <Switch>
             <Route exact path='/'>
-              <Main/>
+              <Main loginVerification={loginVerification}/>
             </Route>
             <Route path='/signup'>
-              <Register handleRegister={handleRegister}/>
+              <ProtectedRouteVerification loginVerification={loginVerification}>
+                <Register handleRegister={handleRegister}/>
+              </ProtectedRouteVerification>
             </Route>
             <Route path='/signin'>
-              <Login handleLogin={handleLogin}/>
+              <ProtectedRouteVerification loginVerification={loginVerification}>
+                <Login handleLogin={handleLogin}/>
+              </ProtectedRouteVerification>
             </Route>
             <Route path='/profile'>
               <ProtectedRoute loginVerification={loginVerification}>
@@ -288,11 +312,12 @@ function App() {
                 <SavedMovies
                   short={updateShort}
                   isShort={short}
-                  setQuery={updateQuery}
+                  setQuery={setQuerySaveFilms}
                   handleMovieDelete={handleMovieDelete}
                   saveMovies={saveMovies}
                   checkLikeStatus={checkLikeStatus}
                   handleSubmitSearch={handleSubmitSearchSave}
+                  querySaveFilms={querySaveFilms}
                 />
               </ProtectedRoute>
             </Route>
@@ -301,9 +326,11 @@ function App() {
             </Route>
           </Switch>
         <InfoTooltip
-          textError={isInfoTooltipPopupTitle}
+          textTitle={isInfoTooltipPopupTitle}
           isOpenPopup={isInfoTooltipPopupOpen}
+          isSuccess={isInfoTooltipPopupSuccess}
           isClosePopup={closePopup}
+          setPopupOpen={setIsInfoTooltipPopupOpen}
         />
 
       </CurrentUserContext.Provider>

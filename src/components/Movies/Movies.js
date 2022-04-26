@@ -11,7 +11,7 @@ function Movies ({handleMovieDelete ,filmFilter ,short, isShort, films, isLoadin
   return (
     <>
       <Header/>
-      <SearchForm query={query} handleSubmitSearch={handleSubmitSearch} setQuery={setQuery}/>
+      <SearchForm query={query} handleSubmit={handleSubmitSearch} setQuery={setQuery}/>
       <FilterCheckbox short={short} isShort={isShort}/>
       <MoviesCardList handleMovieSaveDelete={handleMovieSaveDelete} handleMovieDelete={handleMovieDelete} filmFilter={filmFilter} checkLikeStatus={checkLikeStatus} handleSavedMovie={handleSavedMovie} isShort={isShort} isLoading={isLoading} films={films}/>
       <Footer/>

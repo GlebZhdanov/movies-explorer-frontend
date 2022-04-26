@@ -22,20 +22,23 @@ function Profile ({handlePatchUserInfo, logoutLogin}) {
       <section className='profile'>
         <h3 className='profile__title'>Привет, {currentUser.name}!</h3>
         <Formik
-          initialValues={initialValues}
+          initialValues={{
+            name: currentUser.name,
+            email: currentUser.email
+          }}
           validationSchema={validationSchema}
           onSubmit={onSubmit}>
           {formik => {
             let ValueSum = formik.values.name === currentUser.name && formik.values.email === currentUser.email;
             let onCurrent = formik.dirty;
-            let validateInput = formik.isValid && Object.keys(formik.touched).length > 1;
+            let validateInput = formik.isValid
             let booleanDisable = !ValueSum && onCurrent && validateInput;
             return (
               <Form className='profile__form'>
                 <div className='profile__container'>
                   <label className='profile__text'>Имя</label>
                   <Field className='profile__input'
-                    placeholder={currentUser.name}
+                    type='text'
                     name='name'/>
                 </div>
                 <div id='name-error' className='form__text-error form__text-error_profile'>
@@ -44,7 +47,6 @@ function Profile ({handlePatchUserInfo, logoutLogin}) {
                 <div className='profile__container profile__container_border-none'>
                   <label className='profile__text' type='text'>E-mail</label>
                   <Field className='profile__input'
-                    placeholder={currentUser.email}
                     type='text'
                     name='email'/>
                 </div>

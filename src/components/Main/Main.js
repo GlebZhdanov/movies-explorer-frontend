@@ -7,10 +7,10 @@ import AboutMe from '../AboutMe/AboutMe';
 import Portfolio from '../Portfolio/Portfolio';
 import Footer from '../Footer/Footer';
 
-function Main() {
+function Main({loginVerification}) {
   return (
     <>
-      <Header/>
+      <Header loginVerification={loginVerification}/>
       <Promo/>
       <AboutProject/>
       <Techs/>
