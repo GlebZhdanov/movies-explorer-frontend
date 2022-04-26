@@ -75,7 +75,6 @@ function App() {
     .then(() => {
       openPopupSuccess('Вы успешно зарегистрировались');
       handleLogin(email, password);
-      history.push('/movies');
     })
     .catch((err) => {
       openPopupError("Произошла ошибка регистрации")})
