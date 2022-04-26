@@ -29,4 +29,8 @@
 
 ### **Ссылка на проект: [Movies-explorer](https://glebzhfilms.nomoredomains.xyz)**
 
+### Статус проекта
+
+Проект завершён.
+
 
