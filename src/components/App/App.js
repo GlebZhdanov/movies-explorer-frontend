@@ -20,10 +20,13 @@ function App() {
   const [preloader, setPreloader] = useState(false);
   const [movies, setMovies] = useState([]);
   const [filterMovies, setFilterMovies] = useState([]);
-  const [saveMovies, setSaveMovies] = useState([])
+  const [saveMovies, setSaveMovies] = useState([]);
+  const [filteredSaveMovies, setFilteredSaveMovies] = useState([]);
   const [currentUser, setCurrentUser] = React.useState({});
   const [short, setShort] = useState(false);
+  const [shortSave, setShortSave] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingSaveMovies, setIsLoadingSaveMovies] = useState(true);
   const [query, setQuery] = useState('');
   const [querySaveFilms, setQuerySaveFilms] = useState('')
   const [loginVerification, setLoginVerification] = useState(false);
@@ -58,7 +61,8 @@ function App() {
       Promise.all([api.getUserInfo(), api.getAllMovies()])
       .then(([dataInfoUser, dataInfoMovies]) => {
         setCurrentUser(dataInfoUser);
-        updateMoviesSave(dataInfoMovies);
+        setSaveMovies(dataInfoMovies);
+        setFilteredSaveMovies(dataInfoMovies);
       })
       .catch((err) => console.log("ошибка получения данных: " + err))
       .finally(() => setPreloader(false))
@@ -162,7 +166,8 @@ function App() {
       const savedMovies = saveMovies.filter(
         (i) => i.movieId !== movie.id
       );
-      updateMoviesSave(savedMovies)
+      setSaveMovies(savedMovies);
+      setFilteredSaveMovies(savedMovies);
     })
     .catch((err) => {
       openPopupError('Что-то пошло не так')
@@ -174,7 +179,8 @@ function App() {
     api
     .postMovie(movies)
     .then((dataCard) => {
-      updateMoviesSave([dataCard, ...saveMovies]);
+      setSaveMovies([dataCard, ...saveMovies]);
+      setFilteredSaveMovies([dataCard, ...saveMovies])
     })
     .catch((err) => {
       openPopupError('Что-то пошло не так')
@@ -185,7 +191,9 @@ function App() {
     api.deleteMovie(id)
     .then(() => {
       const savedMovies = saveMovies.filter((film) => id !== film._id);
-      updateMoviesSave(savedMovies)
+      setSaveMovies(savedMovies);
+      setFilteredSaveMovies(savedMovies);
+      setIsLoadingSaveMovies(true)
     })
     .catch((err) => console.log("ошибка удаленения карточки: " + err))
   }
@@ -198,12 +206,6 @@ function App() {
   const updateFilterMovies = (movies) => {
     localStorage.setItem('films_filter', JSON.stringify(movies))
     setFilterMovies(movies);
-    setIsLoading(false)
-  }
-
-  const updateMoviesSave = (movies) => {
-    localStorage.setItem('saved_movies', JSON.stringify(movies))
-    setSaveMovies(movies);
   }
 
   const updateQuery = (query) => {
@@ -242,7 +244,7 @@ function App() {
   useEffect(() => {
     handleSubmitSearch()
     handleSubmitSearchSave()
-  },[query])
+  },[query, querySaveFilms])
 
   const handleSubmitSearch = () => {
     if(query.length) {
@@ -250,20 +252,26 @@ function App() {
         (movie) => movie.nameRU.toLowerCase().indexOf(query) >= 0
       );
       updateFilterMovies(filteredMovies);
+      setIsLoading(false)
     }
   };
 
   const handleSubmitSearchSave = () => {
     if(querySaveFilms.length) {
+      const filteredSave =
       saveMovies.filter(
         (movie) => movie.nameRU.toLowerCase().indexOf(querySaveFilms) >= 0
-      );
+      )
+      setSaveMovies(filteredSave);
+      setIsLoadingSaveMovies(false)
     }
   };
 
   useEffect(() => {
-    setQuerySaveFilms('')
-  },[location])
+    setQuerySaveFilms('');
+    setShortSave(false);
+    setSaveMovies(filteredSaveMovies)
+  },[location]);
 
   return (
       <CurrentUserContext.Provider value={currentUser}>
@@ -309,10 +317,11 @@ function App() {
             <Route path='/saved-movies'>
               <ProtectedRoute loginVerification={loginVerification}>
                 <SavedMovies
-                  short={updateShort}
-                  isShort={short}
+                  short={setShortSave}
+                  isShort={shortSave}
                   setQuery={setQuerySaveFilms}
                   handleMovieDelete={handleMovieDelete}
+                  isLoading={isLoadingSaveMovies}
                   saveMovies={saveMovies}
                   checkLikeStatus={checkLikeStatus}
                   handleSubmitSearch={handleSubmitSearchSave}

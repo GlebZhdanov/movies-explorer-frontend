@@ -54,6 +54,7 @@ function MoviesCardList({handleMovieSaveDelete ,filmFilter ,checkLikeStatus ,fil
     setCount(count + addCount)
   }
 
+
   return (
     <>
       <Route path='/(movies)/'>
@@ -74,11 +75,10 @@ function MoviesCardList({handleMovieSaveDelete ,filmFilter ,checkLikeStatus ,fil
         <section className='movies-list'>
           {films
           .filter(movie => !isShort || movie.duration <= MOVIES_DURATION)
-          .filter(
-            (movie) => movie.nameRU.toLowerCase().indexOf(querySaveFilms) >= 0)
           .map((film, i) => (
             <MoviesCard checkLikeStatus={checkLikeStatus} handleMovieDelete={handleMovieDelete} key={i} films={film}></MoviesCard>
           ))}
+          {!films.length && !isLoading && (<p className='movies-list__text'>Ничего не найдено</p>)}
         </section>
       </Route>
     </>

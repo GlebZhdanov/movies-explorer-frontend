@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import './MoviesCard.css'
 import {Route} from "react-router-dom";
 

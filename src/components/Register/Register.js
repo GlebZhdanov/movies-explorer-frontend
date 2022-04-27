@@ -29,27 +29,27 @@ function Register({handleRegister}) {
             <Form className="form">
               <label className="form__title">Имя</label>
               <Field className="form__input"
-                required
-                type="name"
-                name='name'
+                     required
+                     type="name"
+                     name='name'
               />
               <span id='name-error' className='form__text-error'>
                 <ErrorMessage name='name'/>
               </span>
               <label className="form__title">E-mail</label>
               <Field className="form__input"
-                required
-                type="email"
-                name='email'
-                />
+                     required
+                     type="email"
+                     name='email'
+              />
               <span id='email-error' className='form__text-error'>
                 <ErrorMessage name='email'/>
               </span>
               <label className="form__title">Пароль</label>
               <Field className="form__input"
-                required
-                name='password'
-                type='password'
+                     required
+                     name='password'
+                     type='password'
               />
               <span id='password-error' className='form__text-error'>
                 <ErrorMessage name='password'/>
