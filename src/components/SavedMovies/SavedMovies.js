@@ -3,16 +3,17 @@ import './SavedMovies.css'
 import Header from "../Header/Header";
 import SearchForm from "../SearchForm/SearchForm";
 import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
-import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import Footer from "../Footer/Footer";
+import MoviesCardList from "../MoviesCardList/MoviesCardList";
 
-function SavedMovies () {
+function SavedMovies ({checkLikeStatus, handleSubmitSearch, isShort, saveMovies, handleMovieDelete, short, setQuery, querySaveFilms, isLoading}) {
+
   return (
     <>
       <Header/>
-      <SearchForm/>
-      <FilterCheckbox/>
-      <MoviesCardList/>
+      <SearchForm handleSubmit={handleSubmitSearch} setQuery={setQuery}/>
+      <FilterCheckbox short={short} isShort={isShort}/>
+      <MoviesCardList querySaveFilms={querySaveFilms} checkLikeStatus={checkLikeStatus} isShort={isShort} handleMovieDelete={handleMovieDelete} films={saveMovies} isLoading={isLoading}/>
       <Footer/>
     </>
   )
