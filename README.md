@@ -27,7 +27,11 @@
 
 ##### `npm run build` – production сборка проекта
 
-### Ссылка на проект: [Movies-explorer](https://glebzhfilms.nomoredomains.xyz){:target="_blank"}
+### Ссылка на проект: <a href="https://glebzhfilms.nomoredomains.xyz" target="_blank">Movies-explorer</a>
+
+[//]: # (<a href="example.com" target="_blank">New Tab</a>)
+
+[//]: # (### Ссылка на проект: [Movies-explorer]&#40;https://glebzhfilms.nomoredomains.xyz&#41;{:target="_blank"})
 
 ### Статус проекта
 
