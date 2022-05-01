@@ -1,12 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './FilterCheckbox.css'
 
-function FilterCheckbox() {
+function FilterCheckbox({isShort ,short}) {
 
   return (
     <div className="filter-checkbox">
-      <input className="filter-checkbox__switch" type="checkbox"/>
-      <label className="filter-checkbox__text">Короткометражки</label>
+      <input className="filter-checkbox__switch" type="checkbox" checked={isShort} onChange={() => short(!isShort)}/>
+      <label  className="filter-checkbox__text">Короткометражки</label>
     </div>
   )
 }

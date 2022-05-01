@@ -6,13 +6,14 @@ import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import Footer from "../Footer/Footer";
 
-function Movies () {
+function Movies ({handleMovieDelete ,filmFilter ,short, isShort, films, isLoading, setQuery, handleSubmitSearch, query, handleSavedMovie, checkLikeStatus, handleMovieSaveDelete}) {
+
   return (
     <>
       <Header/>
-      <SearchForm/>
-      <FilterCheckbox/>
-      <MoviesCardList/>
+      <SearchForm query={query} handleSubmit={handleSubmitSearch} setQuery={setQuery}/>
+      <FilterCheckbox short={short} isShort={isShort}/>
+      <MoviesCardList handleMovieSaveDelete={handleMovieSaveDelete} handleMovieDelete={handleMovieDelete} filmFilter={filmFilter} checkLikeStatus={checkLikeStatus} handleSavedMovie={handleSavedMovie} isShort={isShort} isLoading={isLoading} films={films}/>
       <Footer/>
     </>
   )
